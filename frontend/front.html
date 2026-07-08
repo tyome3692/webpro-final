@@ -12,84 +12,107 @@
     --ink:#151E2B; --ink-soft:#5A6472; --surface:#EEF1F5; --card:#FFFFFF; --line:#DDE3EA;
     --free:#0E9F5A; --free-bg:#E4F6EC; --accent:#2C3AE0; --accent-soft:#E6E8FD;
     --warn:#C0392B; --warn-bg:#FBEAE8; --amber:#B7791F; --amber-bg:#FBF1DD;
+    --sidebar:#151E2B; --sidebar-soft:#9AA6B6;
     --radius:14px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
-  body{font-family:"Zen Kaku Gothic New",system-ui,sans-serif;background:var(--surface);color:var(--ink);line-height:1.6;padding:0 0 48px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:560px;margin:0 auto;padding:0 16px}
+  body{font-family:"Zen Kaku Gothic New",system-ui,sans-serif;background:var(--surface);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
 
-  header{padding:26px 0 6px}
-  .eyebrow{font-size:12px;letter-spacing:.14em;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:6px}
-  h1{font-size:28px;font-weight:900;letter-spacing:-.01em;line-height:1.15}
+  .app{display:flex;min-height:100vh;max-width:1000px;margin:0 auto}
+  .sidebar{width:208px;flex:0 0 auto;background:var(--sidebar);color:#fff;padding:16px 12px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh;transition:width .18s ease;overflow:hidden}
+  .sidebar.collapsed{width:64px}
+  .side-top{display:flex;align-items:center;gap:10px;margin-bottom:16px;min-height:34px}
+  .collapse-btn{width:34px;height:34px;flex:0 0 auto;border:0;border-radius:9px;cursor:pointer;background:rgba(255,255,255,.08);color:#fff;font-size:16px;line-height:1;transition:.12s}
+  .collapse-btn:hover{background:rgba(255,255,255,.16)}
+  .brand{font-weight:900;font-size:16px;white-space:nowrap;letter-spacing:.02em}
+  .sidebar.collapsed .brand{opacity:0}
+  .navtab{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--sidebar-soft);font:inherit;font-size:15px;font-weight:700;padding:11px 12px;border-radius:10px;cursor:pointer;transition:.12s;white-space:nowrap}
+  .navtab .ic{font-size:18px;flex:0 0 auto;width:20px;text-align:center}
+  .navtab .lbl{transition:opacity .12s}
+  .sidebar.collapsed .navtab .lbl{opacity:0}
+  .navtab:hover{background:rgba(255,255,255,.07);color:#fff}
+  .navtab[aria-selected="true"]{background:var(--accent);color:#fff}
 
-  /* Tabs */
-  .tabs{display:flex;gap:6px;margin:18px 0 4px;background:#E3E7ED;padding:5px;border-radius:12px}
-  .tab{flex:1;border:0;background:transparent;font:inherit;font-size:15px;font-weight:700;color:var(--ink-soft);padding:9px 8px;border-radius:9px;cursor:pointer;transition:.14s}
-  .tab[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
-
-  .view{display:none;padding-top:16px}
+  .main{flex:1;min-width:0;padding:26px 20px 56px}
+  .main-inner{max-width:620px;margin:0 auto}
+  h1{font-size:26px;font-weight:900;letter-spacing:-.01em;line-height:1.15;margin-bottom:4px}
+  .subtitle{font-size:14px;color:var(--ink-soft);margin-bottom:20px}
+  .view{display:none}
   .view.active{display:block}
 
   .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px}
   .field{margin-bottom:16px}
   .field:last-child{margin-bottom:0}
   .field-label{font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;letter-spacing:.04em}
-
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 13px;border-radius:999px;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:.12s;user-select:none}
   .chip:hover{border-color:var(--accent)}
   .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-
-  .rail{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .rail{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
   .period{flex:0 0 auto;min-width:62px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 6px 8px;text-align:center;cursor:pointer;transition:.12s}
   .period:hover{border-color:var(--accent)}
   .period[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
   .period .n{font-size:17px;font-weight:900;line-height:1}
   .period .t{font-size:10px;color:var(--ink-soft);margin-top:4px}
   .period[aria-pressed="true"] .t{color:#dfe2ff}
-
-  .toggles{display:flex;gap:8px}
-  .toggle{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 8px;text-align:center;cursor:pointer;font:inherit;font-size:13px;font-weight:600;transition:.12s}
+  .toggles{display:flex;gap:8px;flex-wrap:wrap}
+  .toggle{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;text-align:center;cursor:pointer;font:inherit;font-size:13px;font-weight:600;transition:.12s}
+  .toggle.grow{flex:1}
   .toggle:hover{border-color:var(--accent)}
   .toggle[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
   .toggle .ic{display:block;font-size:18px;margin-bottom:2px}
+  .selectrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  select,input[type="date"]{font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  .linkbtn{border:0;background:transparent;color:var(--accent);font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:4px}
 
-  .summary{display:flex;align-items:baseline;justify-content:space-between;margin:6px 2px 12px}
+  .summary{display:flex;align-items:baseline;justify-content:space-between;margin:4px 2px 12px;gap:12px}
   .summary .count{font-size:15px;font-weight:700}
   .summary .count b{color:var(--free);font-size:22px}
   .summary .ctx{font-size:12px;color:var(--ink-soft)}
-
+  .hiddenbar{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin-bottom:12px}
   .list{display:flex;flex-direction:column;gap:10px}
 
-  /* Room card */
   .room{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--free);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:14px}
-  .room .name{font-size:18px;font-weight:900;letter-spacing:-.01em}
+  .room .name{font-size:18px;font-weight:900}
   .room .meta{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
   .room .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
   .tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--free-bg);color:var(--free)}
   .tag.cap{background:#EEF1F5;color:var(--ink-soft)}
 
-  /* Assignment card */
-  .asg{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--radius);padding:13px 16px;text-decoration:none;color:inherit;display:block;transition:.12s}
-  .asg:hover{border-color:var(--accent)}
+  .asg{position:relative;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--radius);padding:13px 16px}
   .asg.due-soon{border-left-color:var(--warn)}
   .asg.due-week{border-left-color:var(--amber)}
   .asg.done{border-left-color:var(--free);opacity:.72}
-  .asg-top{display:flex;align-items:baseline;gap:10px}
-  .asg .title{font-size:16px;font-weight:700;letter-spacing:-.01em;flex:1}
+  .asg-top{display:flex;align-items:baseline;gap:10px;padding-right:26px}
+  .asg .title{font-size:16px;font-weight:700;flex:1}
   .asg .course{font-size:12px;color:var(--ink-soft);margin-top:3px}
-  .asg-bottom{display:flex;align-items:center;gap:8px;margin-top:9px}
+  .asg-bottom{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
   .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
   .badge.sub{background:var(--free-bg);color:var(--free)}
   .badge.graded{background:#EEF1F5;color:var(--ink-soft)}
   .badge.unsub{background:var(--accent-soft);color:var(--accent)}
   .badge.missing{background:var(--warn-bg);color:var(--warn)}
-  .countdown{margin-left:auto;font-size:13px;font-weight:700}
-  .countdown.soon{color:var(--warn)}
-  .countdown.week{color:var(--amber)}
-  .countdown.later{color:var(--ink-soft)}
+  .countdown{font-size:13px;font-weight:700}
+  .countdown.soon{color:var(--warn)} .countdown.week{color:var(--amber)} .countdown.later{color:var(--ink-soft)}
   .asg .date{font-size:12px;color:var(--ink-soft)}
+  .asg .open{margin-left:auto;font-size:12px;font-weight:700;color:var(--accent);text-decoration:none}
+  .hide-btn{position:absolute;top:9px;right:9px;width:22px;height:22px;border:0;border-radius:6px;background:transparent;color:var(--ink-soft);font-size:16px;line-height:1;cursor:pointer;transition:.12s}
+  .hide-btn:hover{background:var(--warn-bg);color:var(--warn)}
+
+  /* ============ 時間割グリッド ============ */
+  .tt-scroll{overflow-x:auto;padding-bottom:6px}
+  .tt{display:grid;grid-template-columns:38px repeat(5,minmax(102px,1fr));grid-auto-rows:minmax(70px,auto);gap:6px;min-width:600px}
+  .tt-h{display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--ink-soft);padding:6px 0}
+  .tt-p{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink-soft)}
+  .tt-p .pn{font-size:15px;font-weight:900;line-height:1}
+  .tt-p .pt{font-size:9px;margin-top:3px}
+  .tt-empty{background:var(--card);border:1px solid var(--line);border-radius:10px;opacity:.5}
+  .tt-course{background:var(--accent-soft);border:1px solid #C7CCF7;border-left:4px solid var(--accent);border-radius:10px;padding:8px 9px;text-decoration:none;color:var(--ink);display:flex;flex-direction:column;gap:3px;overflow:hidden;transition:.12s}
+  .tt-course:hover{box-shadow:0 2px 8px rgba(44,58,224,.18)}
+  .tt-course .cn{font-size:12.5px;font-weight:700;line-height:1.25}
+  .tt-course .cr{font-size:10.5px;color:var(--accent);font-weight:700}
+  .tt-course .ci{font-size:10px;color:var(--ink-soft)}
 
   .state{text-align:center;padding:40px 20px;color:var(--ink-soft);background:var(--card);border:1px dashed var(--line);border-radius:var(--radius)}
   .state .big{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
@@ -97,110 +120,138 @@
   .state.error .big{color:var(--warn)}
   .state code{background:#fff;border:1px solid var(--line);padding:1px 6px;border-radius:5px;font-size:12px;color:var(--ink)}
   .spinner{width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;margin:0 auto 12px;animation:spin .7s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.spinner{animation:pulse 1s ease-in-out infinite}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
-  .filterbar{display:flex;gap:8px;margin-bottom:14px}
-  footer{margin-top:28px;font-size:12px;color:var(--ink-soft);line-height:1.7}
+  footer{margin-top:26px;font-size:12px;color:var(--ink-soft);line-height:1.7}
   footer code{background:#fff;border:1px solid var(--line);padding:1px 5px;border-radius:5px;font-size:11px}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}.spinner{animation:none}}
+  @media (max-width:640px){.main{padding:20px 14px 48px}h1{font-size:22px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="eyebrow">キャンパスの相棒</div>
-    <h1>空き教室と課題を、ひと目で</h1>
-  </header>
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="side-top">
+      <button class="collapse-btn" id="collapseBtn" aria-label="サイドバーを開閉">☰</button>
+      <span class="brand">相棒</span>
+    </div>
+    <nav class="side-nav">
+      <button class="navtab" data-tab="rooms" aria-selected="true"><span class="ic">🏫</span><span class="lbl">空き教室</span></button>
+      <button class="navtab" data-tab="asg"   aria-selected="false"><span class="ic">📝</span><span class="lbl">課題</span></button>
+      <button class="navtab" data-tab="tt"    aria-selected="false"><span class="ic">🗓</span><span class="lbl">時間割</span></button>
+    </nav>
+  </aside>
 
-  <div class="tabs" role="tablist">
-    <button class="tab" id="tab-rooms" role="tab" aria-selected="true">空き教室</button>
-    <button class="tab" id="tab-asg"   role="tab" aria-selected="false">課題</button>
-  </div>
+  <main class="main">
+    <div class="main-inner">
 
-  <!-- ============ 空き教室ビュー ============ -->
-  <section class="view active" id="view-rooms" role="tabpanel">
-    <div class="panel">
-      <div class="field"><div class="field-label">キャンパス</div><div class="chips" id="campusChips"></div></div>
-      <div class="field"><div class="field-label">曜日</div><div class="chips" id="dayChips"></div></div>
-      <div class="field"><div class="field-label">時限</div><div class="rail" id="periodRail"></div></div>
-      <div class="field"><div class="field-label">設備でしぼる（任意）</div>
-        <div class="toggles">
-          <button class="toggle" id="tgPc" aria-pressed="false"><span class="ic">💻</span>PCあり</button>
-          <button class="toggle" id="tgFood" aria-pressed="false"><span class="ic">🍙</span>飲食可</button>
+      <!-- ============ 空き教室 ============ -->
+      <section class="view active" id="view-rooms">
+        <h1>空き教室</h1>
+        <p class="subtitle">曜日・時限・設備をえらぶと、使える教室だけ表示します。</p>
+        <div class="panel">
+          <div class="field"><div class="field-label">キャンパス</div><div class="chips" id="campusChips"></div></div>
+          <div class="field"><div class="field-label">曜日</div><div class="chips" id="dayChips"></div></div>
+          <div class="field"><div class="field-label">時限</div><div class="rail" id="periodRail"></div></div>
+          <div class="field"><div class="field-label">設備でしぼる（任意）</div>
+            <div class="toggles">
+              <button class="toggle grow" id="tgPc" aria-pressed="false"><span class="ic">💻</span>PCあり</button>
+              <button class="toggle grow" id="tgFood" aria-pressed="false"><span class="ic">🍙</span>飲食可</button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="summary">
-      <div class="count"><b id="freeCount">–</b> 室が空いています</div>
-      <div class="ctx" id="ctxLabel"></div>
-    </div>
-    <div class="list" id="rooms"></div>
-  </section>
+        <div class="summary"><div class="count"><b id="freeCount">–</b> 室が空いています</div><div class="ctx" id="ctxLabel"></div></div>
+        <div class="list" id="rooms"></div>
+      </section>
 
-  <!-- ============ 課題ビュー ============ -->
-  <section class="view" id="view-asg" role="tabpanel">
-    <div class="filterbar">
-      <button class="toggle" id="fAll" aria-pressed="true">すべて</button>
-      <button class="toggle" id="fUnsub" aria-pressed="false">未提出だけ</button>
-    </div>
-    <div class="summary">
-      <div class="count"><b id="asgCount">–</b> 件の課題</div>
-      <div class="ctx" id="asgCtx"></div>
-    </div>
-    <div class="list" id="assignments"></div>
-  </section>
+      <!-- ============ 課題 ============ -->
+      <section class="view" id="view-asg">
+        <h1>課題</h1>
+        <p class="subtitle">締め切りの近い順に、提出状況つきで表示します。</p>
+        <div class="panel">
+          <div class="field"><div class="field-label">並び替え</div>
+            <div class="selectrow"><select id="asgSort">
+              <option value="due_asc">締切が近い順</option>
+              <option value="due_desc">締切が遠い順</option>
+              <option value="course">科目順</option>
+            </select></div>
+          </div>
+          <div class="field"><div class="field-label">絞り込み</div>
+            <div class="toggles">
+              <button class="toggle" id="fUnsub" aria-pressed="false">未提出だけ</button>
+              <button class="toggle" id="fHideOver" aria-pressed="false">期限切れを隠す</button>
+            </div>
+          </div>
+          <div class="field"><div class="field-label">日付でしぼる（この日まで）</div>
+            <div class="selectrow"><input type="date" id="asgDate"><button class="linkbtn" id="asgDateClear">クリア</button></div>
+          </div>
+        </div>
+        <div class="summary"><div class="count"><b id="asgCount">–</b> 件の課題</div><div class="ctx" id="asgCtx"></div></div>
+        <div class="hiddenbar" id="hiddenBar" style="display:none">
+          <span id="hiddenLabel"></span><button class="linkbtn" id="restoreHidden">すべて表示に戻す</button>
+        </div>
+        <div class="list" id="assignments"></div>
+      </section>
 
-  <footer>
-    <p>※ データはバックエンド API（<code id="apiLabel"></code>）から取得しています。サーバーを <code>npm run dev</code> で起動してください。</p>
-  </footer>
+      <!-- ============ 時間割 ============ -->
+      <section class="view" id="view-tt">
+        <h1>時間割</h1>
+        <p class="subtitle">履修科目から週間の時間割を組み立てます。</p>
+        <div class="field"><div class="chips" id="termChips"></div></div>
+        <div class="tt-scroll"><div id="timetable"></div></div>
+      </section>
+
+      <footer>
+        <p>※ データはバックエンド API（<code id="apiLabel"></code>）から取得しています。サーバーを <code>npm run dev</code> で起動してください。</p>
+      </footer>
+    </div>
+  </main>
 </div>
 
 <script>
-/* ================= 共通 ================= */
 const API_BASE = "http://localhost:3000";
 document.getElementById("apiLabel").textContent = API_BASE;
 
-/* タブ切り替え（課題は初回表示時に読み込む） */
-let asgLoaded = false;
-function selectTab(which){
-  const rooms = which === "rooms";
-  document.getElementById("tab-rooms").setAttribute("aria-selected", rooms);
-  document.getElementById("tab-asg").setAttribute("aria-selected", !rooms);
-  document.getElementById("view-rooms").classList.toggle("active", rooms);
-  document.getElementById("view-asg").classList.toggle("active", !rooms);
-  if(!rooms && !asgLoaded){ asgLoaded = true; loadAssignments(); }
-}
-document.getElementById("tab-rooms").onclick = ()=>selectTab("rooms");
-document.getElementById("tab-asg").onclick   = ()=>selectTab("asg");
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+};
 
-/* ===================================================================
-   空き教室（前回と同じ：条件を送って結果を並べる）
-   =================================================================== */
+const sidebar=document.getElementById("sidebar");
+function applyCollapsed(c){ sidebar.classList.toggle("collapsed",c); store.set("campus.collapsed",c); }
+document.getElementById("collapseBtn").onclick=()=>applyCollapsed(!sidebar.classList.contains("collapsed"));
+applyCollapsed(store.get("campus.collapsed", window.innerWidth<720));
+
+const loaded={asg:false,tt:false};
+function selectTab(tab){
+  document.querySelectorAll(".navtab").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===tab));
+  document.getElementById("view-rooms").classList.toggle("active",tab==="rooms");
+  document.getElementById("view-asg").classList.toggle("active",tab==="asg");
+  document.getElementById("view-tt").classList.toggle("active",tab==="tt");
+  if(tab==="asg" && !loaded.asg){ loaded.asg=true; loadAssignments(); }
+  if(tab==="tt"  && !loaded.tt){  loaded.tt=true;  loadTimetable(); }
+}
+document.querySelectorAll(".navtab").forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));
+
+/* ============ 空き教室 ============ */
 const CAMPUSES=["日吉","三田","矢上"], DAYS=["月","火","水","木","金"];
 const PERIODS=[{n:1,t:"9:00"},{n:2,t:"10:45"},{n:3,t:"13:00"},{n:4,t:"14:45"},{n:5,t:"16:30"},{n:6,t:"18:10"}];
 const roomState={campus:"日吉",day:0,period:2,needPc:false,needFood:false};
 let roomSeq=0;
-
 function makeChips(c,items,cur,pick){c.innerHTML="";items.forEach(({value,label})=>{const b=document.createElement("button");b.className="chip";b.textContent=label;b.setAttribute("aria-pressed",value===cur);b.onclick=()=>pick(value);c.appendChild(b);});}
-
 function renderRoomControls(){
-  makeChips(campusChips_(),CAMPUSES.map(c=>({value:c,label:c})),roomState.campus,v=>{roomState.campus=v;refreshRooms();});
-  makeChips(dayChips_(),DAYS.map((d,i)=>({value:i,label:d})),roomState.day,v=>{roomState.day=v;refreshRooms();});
+  makeChips(document.getElementById("campusChips"),CAMPUSES.map(c=>({value:c,label:c})),roomState.campus,v=>{roomState.campus=v;refreshRooms();});
+  makeChips(document.getElementById("dayChips"),DAYS.map((d,i)=>({value:i,label:d})),roomState.day,v=>{roomState.day=v;refreshRooms();});
   const rail=document.getElementById("periodRail");rail.innerHTML="";
   PERIODS.forEach(p=>{const el=document.createElement("button");el.className="period";el.setAttribute("aria-pressed",p.n===roomState.period);el.innerHTML=`<div class="n">${p.n}</div><div class="t">${p.t}</div>`;el.onclick=()=>{roomState.period=p.n;refreshRooms();};rail.appendChild(el);});
   const pc=document.getElementById("tgPc");pc.setAttribute("aria-pressed",roomState.needPc);pc.onclick=()=>{roomState.needPc=!roomState.needPc;refreshRooms();};
   const fd=document.getElementById("tgFood");fd.setAttribute("aria-pressed",roomState.needFood);fd.onclick=()=>{roomState.needFood=!roomState.needFood;refreshRooms();};
 }
-const campusChips_=()=>document.getElementById("campusChips");
-const dayChips_=()=>document.getElementById("dayChips");
-
 async function fetchFreeRooms(){
   const p=new URLSearchParams({campus:roomState.campus,day:String(roomState.day),period:String(roomState.period)});
-  if(roomState.needPc)p.set("has_pc","true");
-  if(roomState.needFood)p.set("allows_food","true");
-  const r=await fetch(`${API_BASE}/api/classrooms/search?${p}`);
-  if(!r.ok)throw new Error(r.status);
-  return r.json();
+  if(roomState.needPc)p.set("has_pc","true"); if(roomState.needFood)p.set("allows_food","true");
+  const r=await fetch(`${API_BASE}/api/classrooms/search?${p}`); if(!r.ok)throw new Error(r.status); return r.json();
 }
 function renderRooms(rooms){
   document.getElementById("freeCount").textContent=rooms.length;
@@ -210,98 +261,138 @@ function renderRooms(rooms){
   rooms.forEach(r=>{const tags=[];if(r.has_pc)tags.push(`<span class="tag">💻 PC</span>`);if(r.allows_food)tags.push(`<span class="tag">🍙 飲食可</span>`);tags.push(`<span class="tag cap">${r.capacity}席</span>`);const c=document.createElement("div");c.className="room";c.innerHTML=`<div><div class="name">${r.name}</div><div class="meta">${r.campus}キャンパス</div></div><div class="tags">${tags.join("")}</div>`;box.appendChild(c);});
 }
 async function refreshRooms(){
-  renderRoomControls();
-  const seq=++roomSeq;
+  renderRoomControls();const seq=++roomSeq;
   document.getElementById("freeCount").textContent="–";
   document.getElementById("rooms").innerHTML=`<div class="state"><div class="spinner"></div>空き教室を探しています…</div>`;
   try{const rooms=await fetchFreeRooms();if(seq!==roomSeq)return;renderRooms(rooms);}
   catch(e){if(seq!==roomSeq)return;document.getElementById("freeCount").textContent="–";document.getElementById("rooms").innerHTML=`<div class="state error"><div class="big">サーバーに接続できませんでした</div>バックエンドを <code>npm run dev</code> で起動してください。</div>`;}
 }
 
-/* ===================================================================
-   課題（Canvas由来。/api/assignments を叩く。トークンは触らない）
-   =================================================================== */
-let asgData=[], asgFilter="all";
-
-async function fetchAssignments(){
-  const r=await fetch(`${API_BASE}/api/assignments`);
-  if(!r.ok) throw new Error(r.status);
-  return r.json(); // [{id,title,course,due_at,status,html_url}]
-}
-
-/* 締め切りまでの日数と、表示の見た目を決める */
-function dueInfo(due_at){
-  const now=new Date(), due=new Date(due_at);
-  const days=Math.ceil((due-now)/86400000);
-  let label, cls;
-  if(days<0){ label="期限切れ"; cls="soon"; }
-  else if(days===0){ label="今日まで"; cls="soon"; }
-  else if(days===1){ label="あと1日"; cls="soon"; }
-  else if(days<=3){ label=`あと${days}日`; cls="soon"; }
-  else if(days<=7){ label=`あと${days}日`; cls="week"; }
-  else { label=`あと${days}日`; cls="later"; }
-  return {days,label,cls};
-}
-const fmtDate=(iso)=>new Intl.DateTimeFormat("ja-JP",{month:"numeric",day:"numeric",weekday:"short",hour:"2-digit",minute:"2-digit"}).format(new Date(iso));
-
-function statusBadge(status){
-  switch(status){
-    case "graded":  return `<span class="badge graded">採点済み</span>`;
-    case "submitted": return `<span class="badge sub">提出済み</span>`;
-    case "missing": return `<span class="badge missing">未提出・期限切れ</span>`;
-    default:        return `<span class="badge unsub">未提出</span>`;
-  }
-}
+/* ============ 課題 ============ */
+let asgData=[];
+const asgState={sort:"due_asc",unsubOnly:false,hideOverdue:false,byDate:""};
+let hiddenIds=new Set(store.get("campus.hiddenAsg",[]));
 const isDone=(s)=> s==="submitted"||s==="graded";
-
+function isOverdue(a){ return !isDone(a.status) && (a.status==="missing" || new Date(a.due_at) < new Date()); }
+const fmtDate=(iso)=>new Intl.DateTimeFormat("ja-JP",{month:"numeric",day:"numeric",weekday:"short",hour:"2-digit",minute:"2-digit"}).format(new Date(iso));
+function dueInfo(iso){
+  const days=Math.ceil((new Date(iso)-new Date())/86400000);
+  if(days<0)return{label:"期限切れ",cls:"soon"};if(days===0)return{label:"今日まで",cls:"soon"};
+  if(days===1)return{label:"あと1日",cls:"soon"};if(days<=3)return{label:`あと${days}日`,cls:"soon"};
+  if(days<=7)return{label:`あと${days}日`,cls:"week"};return{label:`あと${days}日`,cls:"later"};
+}
+function statusBadge(s){
+  if(s==="graded")return`<span class="badge graded">採点済み</span>`;
+  if(s==="submitted")return`<span class="badge sub">提出済み</span>`;
+  if(s==="missing")return`<span class="badge missing">未提出・期限切れ</span>`;
+  return`<span class="badge unsub">未提出</span>`;
+}
+async function fetchAssignments(){ const r=await fetch(`${API_BASE}/api/assignments`); if(!r.ok)throw new Error(r.status); return r.json(); }
 function renderAssignments(){
-  const box=document.getElementById("assignments");
-  let items=asgData.slice().sort((a,b)=>new Date(a.due_at)-new Date(b.due_at));
-  if(asgFilter==="unsub") items=items.filter(a=>!isDone(a.status));
-
+  let items=asgData.filter(a=>!hiddenIds.has(a.id));
+  if(asgState.unsubOnly) items=items.filter(a=>!isDone(a.status));
+  if(asgState.hideOverdue) items=items.filter(a=>!isOverdue(a));
+  if(asgState.byDate){const end=new Date(asgState.byDate+"T23:59:59");items=items.filter(a=>new Date(a.due_at)<=end);}
+  const byDue=(a,b)=>new Date(a.due_at)-new Date(b.due_at);
+  if(asgState.sort==="due_desc") items.sort((a,b)=>byDue(b,a));
+  else if(asgState.sort==="course") items.sort((a,b)=>(a.course||"").localeCompare(b.course||"","ja")||byDue(a,b));
+  else items.sort(byDue);
   document.getElementById("asgCount").textContent=items.length;
-  const remaining=asgData.filter(a=>!isDone(a.status)).length;
-  document.getElementById("asgCtx").textContent=`未提出 ${remaining} 件`;
-
-  box.innerHTML="";
-  if(!items.length){box.innerHTML=`<div class="state"><div class="big">表示する課題がありません</div>${asgFilter==="unsub"?"未提出の課題はありません。おつかれさま。":"締め切りのある課題が見つかりませんでした。"}</div>`;return;}
-
+  document.getElementById("asgCtx").textContent=`未提出 ${asgData.filter(a=>!hiddenIds.has(a.id)&&!isDone(a.status)).length} 件`;
+  const hiddenPresent=asgData.filter(a=>hiddenIds.has(a.id)).length;
+  const bar=document.getElementById("hiddenBar");
+  if(hiddenPresent>0){bar.style.display="flex";document.getElementById("hiddenLabel").textContent=`${hiddenPresent}件を非表示にしています`;}else bar.style.display="none";
+  const box=document.getElementById("assignments");box.innerHTML="";
+  if(!items.length){box.innerHTML=`<div class="state"><div class="big">表示する課題がありません</div>絞り込み条件を見直してみてください。</div>`;return;}
   items.forEach(a=>{
-    const done=isDone(a.status);
-    const di=dueInfo(a.due_at);
-    const cls = done ? "done" : (di.cls==="soon"?"due-soon":di.cls==="week"?"due-week":"");
-    const el=document.createElement("a");
-    el.className=`asg ${cls}`;
-    el.href=a.html_url||"#";
-    el.target="_blank"; el.rel="noopener";
-    el.innerHTML=`
-      <div class="asg-top">
-        <div class="title">${a.title}</div>
-        ${done?"":`<div class="countdown ${di.cls}">${di.label}</div>`}
-      </div>
+    const done=isDone(a.status), di=dueInfo(a.due_at);
+    const cls=done?"done":(di.cls==="soon"?"due-soon":di.cls==="week"?"due-week":"");
+    const el=document.createElement("div");el.className=`asg ${cls}`;
+    el.innerHTML=`<button class="hide-btn" title="この課題を非表示" data-id="${a.id}">×</button>
+      <div class="asg-top"><div class="title">${a.title}</div>${done?"":`<div class="countdown ${di.cls}">${di.label}</div>`}</div>
       <div class="course">${a.course}</div>
-      <div class="asg-bottom">
-        ${statusBadge(a.status)}
-        <span class="date">${fmtDate(a.due_at)}</span>
-      </div>`;
+      <div class="asg-bottom">${statusBadge(a.status)}<span class="date">${fmtDate(a.due_at)}</span>${a.html_url?`<a class="open" href="${a.html_url}" target="_blank" rel="noopener">開く ↗</a>`:""}</div>`;
     box.appendChild(el);
   });
+  box.querySelectorAll(".hide-btn").forEach(btn=>btn.onclick=()=>{hiddenIds.add(Number(btn.dataset.id));store.set("campus.hiddenAsg",[...hiddenIds]);renderAssignments();});
 }
-
 async function loadAssignments(){
   document.getElementById("asgCount").textContent="–";
   document.getElementById("assignments").innerHTML=`<div class="state"><div class="spinner"></div>Canvasから課題を取得しています…</div>`;
   try{ asgData=await fetchAssignments(); renderAssignments(); }
-  catch(e){
-    document.getElementById("asgCount").textContent="–";
-    document.getElementById("assignments").innerHTML=`<div class="state error">
-      <div class="big">課題を取得できませんでした</div>
-      バックエンドが起動しているか、<code>.env</code> の Canvas トークンが有効かを確認してください。
-    </div>`;
-  }
+  catch(e){document.getElementById("asgCount").textContent="–";document.getElementById("assignments").innerHTML=`<div class="state error"><div class="big">課題を取得できませんでした</div>バックエンドが起動しているか、<code>.env</code> の Canvas トークンが有効かを確認してください。</div>`;}
 }
-document.getElementById("fAll").onclick  =()=>{asgFilter="all"; document.getElementById("fAll").setAttribute("aria-pressed",true); document.getElementById("fUnsub").setAttribute("aria-pressed",false); renderAssignments();};
-document.getElementById("fUnsub").onclick=()=>{asgFilter="unsub"; document.getElementById("fUnsub").setAttribute("aria-pressed",true); document.getElementById("fAll").setAttribute("aria-pressed",false); renderAssignments();};
+document.getElementById("asgSort").onchange=(e)=>{asgState.sort=e.target.value;renderAssignments();};
+document.getElementById("fUnsub").onclick=(e)=>{asgState.unsubOnly=!asgState.unsubOnly;e.currentTarget.setAttribute("aria-pressed",asgState.unsubOnly);renderAssignments();};
+document.getElementById("fHideOver").onclick=(e)=>{asgState.hideOverdue=!asgState.hideOverdue;e.currentTarget.setAttribute("aria-pressed",asgState.hideOverdue);renderAssignments();};
+document.getElementById("asgDate").onchange=(e)=>{asgState.byDate=e.target.value;renderAssignments();};
+document.getElementById("asgDateClear").onclick=()=>{asgState.byDate="";document.getElementById("asgDate").value="";renderAssignments();};
+document.getElementById("restoreHidden").onclick=()=>{hiddenIds.clear();store.set("campus.hiddenAsg",[]);renderAssignments();};
+
+/* ============ 時間割 ============ */
+let ttData=[], ttTerm="";
+async function fetchTimetable(){ const r=await fetch(`${API_BASE}/api/timetable`); if(!r.ok)throw new Error(r.status); return r.json(); }
+
+function renderTermChips(){
+  const terms=[...new Set(ttData.map(c=>c.term).filter(Boolean))];
+  const box=document.getElementById("termChips");
+  if(terms.length<2){ box.innerHTML=""; return; }               // 期が1種類ならチップ不要
+  if(!ttTerm) ttTerm=terms[0];
+  makeChips(box, terms.map(t=>({value:t,label:t})), ttTerm, v=>{ttTerm=v;renderTimetable();});
+}
+
+function renderTimetable(){
+  const box=document.getElementById("timetable");
+  const courses = ttData.filter(c=> !ttTerm || !c.term || c.term===ttTerm);
+
+  // 各コマの占有と、曜日ごとの連続コマをまとめてブロック化
+  const blocks=[]; const covered=new Set(); let maxP=6;
+  courses.forEach(c=>{
+    const byDay={};
+    (c.slots||[]).forEach(s=>{ (byDay[s.day]=byDay[s.day]||[]).push(s.period); maxP=Math.max(maxP,s.period); });
+    Object.entries(byDay).forEach(([day,ps])=>{
+      const d=Number(day), mn=Math.min(...ps), mx=Math.max(...ps);
+      if(d<0||d>4) return;                                       // 月〜金のみ表示
+      blocks.push({c,day:d,min:mn,max:mx});
+      for(let p=mn;p<=mx;p++) covered.add(d+"-"+p);
+    });
+  });
+
+  const grid=document.createElement("div");grid.className="tt";
+  // ヘッダ
+  const corner=document.createElement("div");corner.className="tt-h";grid.appendChild(corner);
+  DAYS.forEach((name,d)=>{const h=document.createElement("div");h.className="tt-h";h.style.gridColumn=(d+2);h.style.gridRow=1;h.textContent=name;grid.appendChild(h);});
+  // 時限ラベル
+  for(let p=1;p<=maxP;p++){
+    const lab=document.createElement("div");lab.className="tt-p";lab.style.gridColumn=1;lab.style.gridRow=p+1;
+    const t=PERIODS[p-1]?PERIODS[p-1].t:"";
+    lab.innerHTML=`<div class="pn">${p}</div><div class="pt">${t}</div>`;grid.appendChild(lab);
+  }
+  // 空きセル
+  for(let d=0;d<5;d++) for(let p=1;p<=maxP;p++){
+    if(covered.has(d+"-"+p))continue;
+    const e=document.createElement("div");e.className="tt-empty";e.style.gridColumn=d+2;e.style.gridRow=p+1;grid.appendChild(e);
+  }
+  // 授業ブロック
+  blocks.forEach(b=>{
+    const a=document.createElement(b.c.html_url?"a":"div");a.className="tt-course";
+    a.style.gridColumn=b.day+2;a.style.gridRow=`${b.min+1} / ${b.max+2}`;
+    if(b.c.html_url){a.href=b.c.html_url;a.target="_blank";a.rel="noopener";}
+    const rooms=(b.c.rooms||[]).join(" / ");
+    a.innerHTML=`<div class="cn">${b.c.course}</div>${rooms?`<div class="cr">${rooms}</div>`:""}${b.c.instructor?`<div class="ci">${b.c.instructor}</div>`:""}`;
+    grid.appendChild(a);
+  });
+
+  box.innerHTML="";
+  if(!blocks.length){ box.innerHTML=`<div class="state"><div class="big">時間割を組み立てられませんでした</div>履修科目のタイトルが想定の書式か確認してください。</div>`; return; }
+  box.appendChild(grid);
+}
+
+async function loadTimetable(){
+  document.getElementById("timetable").innerHTML=`<div class="state"><div class="spinner"></div>履修科目から時間割を作成しています…</div>`;
+  try{ ttData=await fetchTimetable(); renderTermChips(); renderTimetable(); }
+  catch(e){ document.getElementById("timetable").innerHTML=`<div class="state error"><div class="big">時間割を取得できませんでした</div>バックエンドの <code>/api/timetable</code> が動いているか確認してください。</div>`;}
+}
 
 /* 起動 */
 refreshRooms();
