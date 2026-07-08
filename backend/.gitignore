@@ -1,0 +1,38 @@
+# ---- 依存パッケージ ----
+node_modules/
+
+# ---- 環境変数・秘密情報（最重要：Canvasトークンが入る）----
+.env
+.env.*
+!.env.example        # 空欄テンプレートだけは共有してよい
+
+# ---- データベース（SQLite）----
+# Prisma の DATABASE_URL="file:./dev.db" は prisma/ 配下に作られる
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+prisma/*.db
+prisma/*.db-journal
+
+# ---- ビルド成果物 ----
+dist/
+build/
+*.tsbuildinfo
+
+# ---- ログ ----
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---- OS・エディタが作る不要ファイル ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ---- テスト・キャッシュ ----
+coverage/
+.cache/

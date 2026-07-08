@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 教室マスタ
+model Classroom {
+  id         Int        @id @default(autoincrement())
+  name       String     // 教室名 例: "101", "南校舎443"
+  campus     String     // キャンパス 例: "日吉"
+  hasPc      Boolean    @default(false) // PCの有無
+  allowsFood Boolean    @default(false) // 飲食可否
+  capacity   Int        // 定員（席数）
+  schedules  Schedule[] // この教室で行われる授業（1対多）
+}
+
+// 授業スケジュール = 「埋まっているコマ」。ここに無い時間帯は空き。
+model Schedule {
+  id        Int       @id @default(autoincrement())
+  roomId    Int       // 外部キー
+  room      Classroom @relation(fields: [roomId], references: [id])
+  day       Int       // 0=月 1=火 2=水 3=木 4=金
+  period    Int       // 時限 1〜6
+
+  @@index([day, period]) // 検索を速くするための索引
+}
