@@ -58,6 +58,21 @@ curl "http://localhost:3000/api/assignments"
 
 # 未提出・期限切れのみ
 curl "http://localhost:3000/api/assignments?status=unsubmitted"
+
+# 試験一覧（日付順）。小テスト(Quizzes)とカレンダー予定から収集
+curl "http://localhost:3000/api/exams"
+
+# 時間割（履修科目タイトルを解析）
+curl "http://localhost:3000/api/timetable"
+curl "http://localhost:3000/api/timetable?term=春"
+```
+
+### パーサのユニットテスト
+
+`parseCourseTitle`（時間割タイトル解析）は Node 標準の `node:test` でテストしています。
+
+```bash
+npm test
 ```
 
 ## フォルダ構成
@@ -71,13 +86,18 @@ backend/
 │   ├── index.ts
 │   ├── routes/
 │   │   ├── classrooms.ts
-│   │   └── assignments.ts
+│   │   ├── assignments.ts
+│   │   ├── exams.ts
+│   │   └── timetable.ts
 │   ├── controllers/
 │   │   ├── classroomController.ts
-│   │   └── assignmentController.ts
+│   │   ├── assignmentController.ts
+│   │   ├── examController.ts
+│   │   └── timetableController.ts
 │   ├── services/
 │   │   ├── classroomService.ts
-│   │   └── canvasService.ts
+│   │   ├── canvasService.ts
+│   │   └── canvasService.test.ts
 │   └── lib/prisma.ts
 ├── .env
 ├── package.json
