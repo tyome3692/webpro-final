@@ -179,15 +179,21 @@
           </div>
           <div class="field"><div class="field-label">絞り込み</div>
             <div class="toggles">
-              <button class="toggle" id="fUnsub" aria-pressed="false">未提出だけ</button>
-              <button class="toggle" id="fHideOver" aria-pressed="false">期限切れを隠す</button>
+              <button class="toggle" id="fUnsub" aria-pressed="true">未提出だけ</button>
+              <button class="toggle" id="fHideOver" aria-pressed="true">期限切れを隠す</button>
             </div>
           </div>
           <div class="field"><div class="field-label">日付でしぼる（この日まで）</div>
             <div class="selectrow"><input type="date" id="asgDate"><button class="linkbtn" id="asgDateClear">クリア</button></div>
           </div>
         </div>
-        <div class="summary"><div class="count"><b id="asgCount">–</b> 件の課題</div><div class="ctx" id="asgCtx"></div></div>
+        <div class="summary">
+          <div class="count"><b id="asgCount">–</b> 件の課題</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="ctx" id="asgCtx"></span>
+            <button class="linkbtn" id="asgReload">🔄 更新</button>
+          </div>
+        </div>
         <div class="hiddenbar" id="hiddenBar" style="display:none">
           <span id="hiddenLabel"></span><button class="linkbtn" id="restoreHidden">すべて表示に戻す</button>
         </div>
@@ -270,7 +276,7 @@ async function refreshRooms(){
 
 /* ============ 課題 ============ */
 let asgData=[];
-const asgState={sort:"due_asc",unsubOnly:false,hideOverdue:false,byDate:""};
+const asgState={sort:"due_asc",unsubOnly:true,hideOverdue:true,byDate:""};
 let hiddenIds=new Set(store.get("campus.hiddenAsg",[]));
 const isDone=(s)=> s==="submitted"||s==="graded";
 function isOverdue(a){ return !isDone(a.status) && (a.status==="missing" || new Date(a.due_at) < new Date()); }
@@ -328,6 +334,7 @@ document.getElementById("fHideOver").onclick=(e)=>{asgState.hideOverdue=!asgStat
 document.getElementById("asgDate").onchange=(e)=>{asgState.byDate=e.target.value;renderAssignments();};
 document.getElementById("asgDateClear").onclick=()=>{asgState.byDate="";document.getElementById("asgDate").value="";renderAssignments();};
 document.getElementById("restoreHidden").onclick=()=>{hiddenIds.clear();store.set("campus.hiddenAsg",[]);renderAssignments();};
+document.getElementById("asgReload").onclick=()=>loadAssignments(); // Canvasから再取得
 
 /* ============ 時間割 ============ */
 let ttData=[], ttTerm="";
@@ -346,10 +353,10 @@ function renderTimetable(){
   const courses = ttData.filter(c=> !ttTerm || !c.term || c.term===ttTerm);
 
   // 各コマの占有と、曜日ごとの連続コマをまとめてブロック化
-  const blocks=[]; const covered=new Set(); let maxP=6;
+  const blocks=[]; const covered=new Set(); const maxP=5; // 1〜5限で固定
   courses.forEach(c=>{
     const byDay={};
-    (c.slots||[]).forEach(s=>{ (byDay[s.day]=byDay[s.day]||[]).push(s.period); maxP=Math.max(maxP,s.period); });
+    (c.slots||[]).forEach(s=>{ if(s.period>=1&&s.period<=maxP){ (byDay[s.day]=byDay[s.day]||[]).push(s.period); } });
     Object.entries(byDay).forEach(([day,ps])=>{
       const d=Number(day), mn=Math.min(...ps), mx=Math.max(...ps);
       if(d<0||d>4) return;                                       // 月〜金のみ表示
