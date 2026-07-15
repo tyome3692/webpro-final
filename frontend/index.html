@@ -19,7 +19,7 @@
   html{-webkit-text-size-adjust:100%}
   body{font-family:"Zen Kaku Gothic New",system-ui,sans-serif;background:var(--surface);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
 
-  .app{display:flex;min-height:100vh;max-width:1000px;margin:0 auto}
+  .app{display:flex;min-height:100vh}
   .sidebar{width:208px;flex:0 0 auto;background:var(--sidebar);color:#fff;padding:16px 12px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh;transition:width .18s ease;overflow:hidden}
   .sidebar.collapsed{width:64px}
   .side-top{display:flex;align-items:center;gap:10px;margin-bottom:16px;min-height:34px}
@@ -249,8 +249,7 @@
 </div>
 
 <script>
-// const API_BASE = "http://localhost:3000";
-const API_BASE = "https://webpro-final.onrender.com"
+const API_BASE = window.APP_CONFIG.API_BASE;
 document.getElementById("apiLabel").textContent = API_BASE;
 
 const store = {
