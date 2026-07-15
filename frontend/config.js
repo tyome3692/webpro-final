@@ -1,0 +1,1 @@
+<script> window.APP_CONFIG = {API_BASE: "https://webpro-final.onrender.com"};</script>
