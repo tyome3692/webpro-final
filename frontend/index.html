@@ -124,9 +124,28 @@
   @media (prefers-reduced-motion:reduce){.spinner{animation:pulse 1s ease-in-out infinite}}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
+  /* ============ カレンダー ============ */
+  .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .cal-navbtn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:18px;line-height:1;cursor:pointer;color:var(--ink);transition:.12s}
+  .cal-navbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .cal-title{font-size:18px;font-weight:900;min-width:120px}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cal-h{text-align:center;font-size:12px;font-weight:900;color:var(--ink-soft);padding:2px 0}
+  .cal-h.sun{color:var(--warn)} .cal-h.sat{color:var(--accent)}
+  .cal-cell{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px;min-height:82px;display:flex;flex-direction:column;gap:4px}
+  .cal-cell.blank{background:transparent;border:0;min-height:0}
+  .cal-cell.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .cal-date{font-size:12px;font-weight:700;color:var(--ink-soft)}
+  .cal-cell.today .cal-date{color:var(--accent)}
+  .cal-cell.sun .cal-date{color:var(--warn)} .cal-cell.sat .cal-date{color:var(--accent)}
+  .cal-chip{font-size:10.5px;font-weight:700;padding:3px 6px;border-radius:6px;line-height:1.3;text-decoration:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cal-chip.todo{background:var(--accent-soft);color:var(--accent)}
+  .cal-chip.over{background:var(--warn-bg);color:var(--warn)}
+  .cal-chip.done{background:var(--free-bg);color:var(--free)}
+
   footer{margin-top:26px;font-size:12px;color:var(--ink-soft);line-height:1.7}
   footer code{background:#fff;border:1px solid var(--line);padding:1px 5px;border-radius:5px;font-size:11px}
-  @media (max-width:640px){.main{padding:20px 14px 48px}h1{font-size:22px}}
+  @media (max-width:640px){.main{padding:20px 14px 48px}h1{font-size:22px}.cal{gap:3px}.cal-cell{padding:4px;min-height:64px}.cal-chip{font-size:9.5px;padding:2px 4px}}
 </style>
 </head>
 <body>
@@ -139,6 +158,7 @@
     <nav class="side-nav">
       <button class="navtab" data-tab="rooms" aria-selected="true"><span class="ic">🏫</span><span class="lbl">空き教室</span></button>
       <button class="navtab" data-tab="asg"   aria-selected="false"><span class="ic">📝</span><span class="lbl">課題</span></button>
+      <button class="navtab" data-tab="cal"   aria-selected="false"><span class="ic">📆</span><span class="lbl">カレンダー</span></button>
       <button class="navtab" data-tab="tt"    aria-selected="false"><span class="ic">🗓</span><span class="lbl">時間割</span></button>
     </nav>
   </aside>
@@ -208,6 +228,19 @@
         <div class="tt-scroll"><div id="timetable"></div></div>
       </section>
 
+      <!-- ============ カレンダー ============ -->
+      <section class="view" id="view-cal">
+        <h1>課題カレンダー</h1>
+        <p class="subtitle">締め切りの日付に課題を並べます。</p>
+        <div class="cal-nav">
+          <button class="cal-navbtn" id="calPrev" aria-label="前の月">‹</button>
+          <div class="cal-title" id="calTitle"></div>
+          <button class="cal-navbtn" id="calNext" aria-label="次の月">›</button>
+          <button class="linkbtn" id="calToday">今日</button>
+        </div>
+        <div id="calendar"></div>
+      </section>
+
       <footer>
         <p>※ データはバックエンド API（<code id="apiLabel"></code>）から取得しています。サーバーを <code>npm run dev</code> で起動してください。</p>
       </footer>
@@ -217,7 +250,7 @@
 
 <script>
 // const API_BASE = "http://localhost:3000";
-const API_BASE = "https://webpro-final.onrender.com";
+const API_BASE = "https://webpro-final.onrender.com"
 document.getElementById("apiLabel").textContent = API_BASE;
 
 const store = {
@@ -230,13 +263,15 @@ function applyCollapsed(c){ sidebar.classList.toggle("collapsed",c); store.set("
 document.getElementById("collapseBtn").onclick=()=>applyCollapsed(!sidebar.classList.contains("collapsed"));
 applyCollapsed(store.get("campus.collapsed", window.innerWidth<720));
 
-const loaded={asg:false,tt:false};
+const loaded={asg:false,tt:false,cal:false};
 function selectTab(tab){
   document.querySelectorAll(".navtab").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===tab));
   document.getElementById("view-rooms").classList.toggle("active",tab==="rooms");
   document.getElementById("view-asg").classList.toggle("active",tab==="asg");
+  document.getElementById("view-cal").classList.toggle("active",tab==="cal");
   document.getElementById("view-tt").classList.toggle("active",tab==="tt");
   if(tab==="asg" && !loaded.asg){ loaded.asg=true; loadAssignments(); }
+  if(tab==="cal" && !loaded.cal){ loaded.cal=true; loadCalendar(); }
   if(tab==="tt"  && !loaded.tt){  loaded.tt=true;  loadTimetable(); }
 }
 document.querySelectorAll(".navtab").forEach(b=>b.onclick=()=>selectTab(b.dataset.tab));
@@ -276,7 +311,12 @@ async function refreshRooms(){
 }
 
 /* ============ 課題 ============ */
-let asgData=[];
+let asgData=[], asgFetched=false;
+async function ensureAsg(force){
+  if(asgFetched && !force) return;
+  asgData = await fetchAssignments();
+  asgFetched = true;
+}
 const asgState={sort:"due_asc",unsubOnly:true,hideOverdue:true,byDate:""};
 let hiddenIds=new Set(store.get("campus.hiddenAsg",[]));
 const isDone=(s)=> s==="submitted"||s==="graded";
@@ -323,10 +363,10 @@ function renderAssignments(){
   });
   box.querySelectorAll(".hide-btn").forEach(btn=>btn.onclick=()=>{hiddenIds.add(Number(btn.dataset.id));store.set("campus.hiddenAsg",[...hiddenIds]);renderAssignments();});
 }
-async function loadAssignments(){
+async function loadAssignments(force){
   document.getElementById("asgCount").textContent="–";
   document.getElementById("assignments").innerHTML=`<div class="state"><div class="spinner"></div>Canvasから課題を取得しています…</div>`;
-  try{ asgData=await fetchAssignments(); renderAssignments(); }
+  try{ await ensureAsg(force); renderAssignments(); if(loaded.cal) renderCalendar(); }
   catch(e){document.getElementById("asgCount").textContent="–";document.getElementById("assignments").innerHTML=`<div class="state error"><div class="big">課題を取得できませんでした</div>バックエンドが起動しているか、<code>.env</code> の Canvas トークンが有効かを確認してください。</div>`;}
 }
 document.getElementById("asgSort").onchange=(e)=>{asgState.sort=e.target.value;renderAssignments();};
@@ -335,7 +375,7 @@ document.getElementById("fHideOver").onclick=(e)=>{asgState.hideOverdue=!asgStat
 document.getElementById("asgDate").onchange=(e)=>{asgState.byDate=e.target.value;renderAssignments();};
 document.getElementById("asgDateClear").onclick=()=>{asgState.byDate="";document.getElementById("asgDate").value="";renderAssignments();};
 document.getElementById("restoreHidden").onclick=()=>{hiddenIds.clear();store.set("campus.hiddenAsg",[]);renderAssignments();};
-document.getElementById("asgReload").onclick=()=>loadAssignments(); // Canvasから再取得
+document.getElementById("asgReload").onclick=()=>loadAssignments(true); // Canvasから再取得
 
 /* ============ 時間割 ============ */
 let ttData=[], ttTerm="";
@@ -400,6 +440,77 @@ async function loadTimetable(){
   document.getElementById("timetable").innerHTML=`<div class="state"><div class="spinner"></div>履修科目から時間割を作成しています…</div>`;
   try{ ttData=await fetchTimetable(); renderTermChips(); renderTimetable(); }
   catch(e){ document.getElementById("timetable").innerHTML=`<div class="state error"><div class="big">時間割を取得できませんでした</div>バックエンドの <code>/api/timetable</code> が動いているか確認してください。</div>`;}
+}
+
+/* ============ カレンダー ============ */
+let calYear, calMonth; // 表示中の年・月（0始まり）
+(function initCal(){ const now=new Date(); calYear=now.getFullYear(); calMonth=now.getMonth(); })();
+
+function calChipClass(a){ if(isDone(a.status)) return "done"; if(isOverdue(a)) return "over"; return "todo"; }
+
+function renderCalendar(){
+  const box=document.getElementById("calendar");
+
+  // 課題を「締切の日付」ごとにまとめる
+  const byDate={};
+  asgData.forEach(a=>{
+    if(!a.due_at) return;
+    const d=new Date(a.due_at);
+    const key=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    (byDate[key]=byDate[key]||[]).push(a);
+  });
+  Object.values(byDate).forEach(list=>list.sort((x,y)=>new Date(x.due_at)-new Date(y.due_at)));
+
+  document.getElementById("calTitle").textContent=`${calYear}年${calMonth+1}月`;
+
+  const startWeekday=new Date(calYear,calMonth,1).getDay();       // 0=日
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  const isToday=(y,m,d)=> y===today.getFullYear()&&m===today.getMonth()&&d===today.getDate();
+
+  const grid=document.createElement("div");grid.className="cal";
+  ["日","月","火","水","木","金","土"].forEach((w,i)=>{
+    const h=document.createElement("div");h.className="cal-h"+(i===0?" sun":i===6?" sat":"");h.textContent=w;grid.appendChild(h);
+  });
+  // 1日より前の空白
+  for(let i=0;i<startWeekday;i++){const e=document.createElement("div");e.className="cal-cell blank";grid.appendChild(e);}
+  // 日付セル
+  for(let day=1;day<=daysInMonth;day++){
+    const wd=(startWeekday+day-1)%7;
+    const cell=document.createElement("div");
+    cell.className="cal-cell"+(isToday(calYear,calMonth,day)?" today":"")+(wd===0?" sun":wd===6?" sat":"");
+    const dateEl=document.createElement("div");dateEl.className="cal-date";dateEl.textContent=day;cell.appendChild(dateEl);
+    (byDate[`${calYear}-${calMonth}-${day}`]||[]).forEach(a=>{                // 多いほどセルが縦に伸びる
+      const chip=document.createElement(a.html_url?"a":"div");
+      chip.className="cal-chip "+calChipClass(a);
+      if(a.html_url){chip.href=a.html_url;chip.target="_blank";chip.rel="noopener";}
+      chip.title=`${a.title}（${a.course}）`;
+      chip.textContent=a.title;
+      cell.appendChild(chip);
+    });
+    grid.appendChild(cell);
+  }
+  // 最終週を埋める空白
+  const trailing=(7-((startWeekday+daysInMonth)%7))%7;
+  for(let i=0;i<trailing;i++){const e=document.createElement("div");e.className="cal-cell blank";grid.appendChild(e);}
+
+  box.innerHTML="";box.appendChild(grid);
+}
+
+function shiftMonth(delta){
+  calMonth+=delta;
+  if(calMonth<0){calMonth=11;calYear--;}
+  if(calMonth>11){calMonth=0;calYear++;}
+  renderCalendar();
+}
+document.getElementById("calPrev").onclick=()=>shiftMonth(-1);
+document.getElementById("calNext").onclick=()=>shiftMonth(1);
+document.getElementById("calToday").onclick=()=>{const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();renderCalendar();};
+
+async function loadCalendar(){
+  document.getElementById("calendar").innerHTML=`<div class="state"><div class="spinner"></div>課題を読み込んでいます…</div>`;
+  try{ await ensureAsg(); renderCalendar(); }
+  catch(e){ document.getElementById("calendar").innerHTML=`<div class="state error"><div class="big">課題を取得できませんでした</div>バックエンドが起動しているか、Canvas トークンが有効かを確認してください。</div>`;}
 }
 
 /* 起動 */
