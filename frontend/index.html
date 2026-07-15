@@ -129,7 +129,7 @@
   .cal-navbtn{width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:18px;line-height:1;cursor:pointer;color:var(--ink);transition:.12s}
   .cal-navbtn:hover{border-color:var(--accent);color:var(--accent)}
   .cal-title{font-size:18px;font-weight:900;min-width:120px}
-  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
   .cal-h{text-align:center;font-size:12px;font-weight:900;color:var(--ink-soft);padding:2px 0}
   .cal-h.sun{color:var(--warn)} .cal-h.sat{color:var(--accent)}
   .cal-cell{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px;min-height:82px;display:flex;flex-direction:column;gap:4px}
@@ -250,7 +250,7 @@
 
 <script src="config.js"></script>
 <script>
-const API_BASE = window.APP_CONFIG.API_BASE;
+const API_BASE = (window.APP_CONFIG && window.APP_CONFIG.API_BASE) || "http://localhost:3000";
 document.getElementById("apiLabel").textContent = API_BASE;
 
 const store = {
